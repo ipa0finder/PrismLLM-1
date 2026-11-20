@@ -1,0 +1,10 @@
+{
+  "name": "prismllm",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "mkdir -p ios/PrismLLM/Web && esbuild src/app.ts --bundle --minify --target=safari15 --outfile=ios/PrismLLM/Web/app.js && cp web/index.html web/styles.css ios/PrismLLM/Web/"
+  },
+  "devDependencies": { "esbuild": "^0.24.0", "typescript": "^5.6.0" }
+}
