@@ -1,1 +1,37 @@
+name: Build PrismLLM IPA
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Bundle web app
+        run: |
+          npm install
+          npm run typecheck
+          npm run build
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          cd ios && xcodegen generate
+      - name: Build unsigned app
+        run: |
+          xcodebuild -project ios/PrismLLM.xcodeproj -scheme PrismLLM \
+            -configuration Release -sdk iphoneos -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+      - name: Package IPA
+        run: |
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/PrismLLM.app Payload/
+          zip -qry PrismLLM.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PrismLLM-ipa
+          path: PrismLLM.ipa
