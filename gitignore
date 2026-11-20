@@ -1,0 +1,5 @@
+node_modules
+ios/PrismLLM.xcodeproj
+ios/PrismLLM/Web/app.js
+build
+*.ipa
